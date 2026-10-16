@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Student Performance Analytics</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- =========================
+     LOGIN SCREEN
+========================== -->
+
+<div id="loginScreen" class="login-screen">
+
+    <div class="login-card">
+
+        <div class="login-logo">
+            ☁
+        </div>
+
+        <h1>Student Analytics</h1>
+
+        <p class="login-subtitle">
+            Sign in to access your analytics dashboard
+        </p>
+
+        <form id="loginForm">
+
+            <div class="form-group">
+
+                <label for="loginEmail">
+                    Email
+                </label>
+
+                <input
+                    type="email"
+                    id="loginEmail"
+                    placeholder="Enter your email"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="loginPassword">
+                    Password
+                </label>
+
+                <input
+                    type="password"
+                    id="loginPassword"
+                    placeholder="Enter your password"
+                    required
+                >
+
+            </div>
+
+
+            <button
+                type="submit"
+                id="loginButton"
+                class="login-button"
+            >
+                Sign In
+            </button>
+
+            <div
+                id="loginMessage"
+                class="login-message"
+            ></div>
+
+        </form>
+
+    </div>
+
+</div>
+
+    <!-- =========================
+         APP LAYOUT
+    ========================== -->
+
+    <div id="appLayout" class="app-layout hidden">
+
+        <!-- =========================
+             SIDEBAR
+        ========================== -->
+
+        <aside class="sidebar">
+
+            <div class="sidebar-brand">
+
+                <div class="brand-icon">
+                    ☁
+                </div>
+
+                <div>
+                    <h2>Student Analytics</h2>
+                    <span>Cloud Analytics</span>
+                </div>
+
+            </div>
+
+
+            <nav class="navigation">
+
+                <button
+                    class="nav-item active"
+                    data-section="dashboardSection"
+                >
+                    <span>⌂</span>
+                    Dashboard
+                </button>
+
+                <button
+                    class="nav-item"
+                    data-section="uploadSection"
+                >
+                    <span>↑</span>
+                    Analyze Dataset
+                </button>
+
+                <button
+                    class="nav-item"
+                    data-section="resultsSection"
+                >
+                    <span>▦</span>
+                    Analysis
+                </button>
+
+                <button
+                    class="nav-item"
+                    data-section="datasetsSection"
+                >
+                    <span>☷</span>
+                    Datasets
+                </button>
+
+            </nav>
+
+
+            <div class="sidebar-bottom">
+
+                <div class="cloud-status">
+                    <span class="status-dot"></span>
+
+                    <div>
+                        <strong>Cloud Connected</strong>
+                        <small>System operational</small>
+                    </div>
+                </div>
+
+                <button id="logoutButton" class="logout-button">
+                    ↪ Logout
+                </button>
+
+            </div>
+
+        </aside>
+
+
+        <!-- =========================
+             MAIN CONTENT
+        ========================== -->
+
+        <main class="main-content">
+
+            <!-- =========================
+                 TOP BAR
+            ========================== -->
+
+            <header class="topbar">
+
+                <div>
+                    <h1 id="pageTitle">Dashboard</h1>
+                    <p id="pageSubtitle">
+                        Monitor your student data and analysis.
+                    </p>
+                </div>
+
+                <div class="topbar-user">
+
+                    <div class="user-avatar">
+                        U
+                    </div>
+
+                    <div>
+                        <strong id="userName">User</strong>
+                        <span>Data Analyst</span>
+                    </div>
+
+                </div>
+
+            </header>
+
+
+            <!-- =========================
+                 DASHBOARD
+            ========================== -->
+
+            <section
+                id="dashboardSection"
+                class="page-section active-section"
+            >
+
+                <div class="dashboard-header">
+
+                    <div>
+                        <span class="section-label">
+                            OVERVIEW
+                        </span>
+
+                        <h2>Analytics Dashboard</h2>
+
+                        <p>
+                            View your recent datasets and analysis activity.
+                        </p>
+                    </div>
+
+                    <button
+                        class="primary-button"
+                        data-section="uploadSection"
+                    >
+                        + Analyze Dataset
+                    </button>
+
+                </div>
+
+
+                <!-- KPI CARDS -->
+
+                <div class="dashboard-grid">
+
+                    <div class="dashboard-card">
+
+                        <div class="dashboard-card-icon">
+                            #
+                        </div>
+
+                        <div>
+                            <span>Total Datasets</span>
+                            <strong id="dashboardDatasetCount">0</strong>
+                        </div>
+
+                    </div>
+
+
+                    <div class="dashboard-card">
+
+                        <div class="dashboard-card-icon">
+                            #
+                        </div>
+
+                        <div>
+                            <span>Total Records</span>
+                            <strong id="dashboardRecordCount">0</strong>
+                        </div>
+
+                    </div>
+
+
+                    <div class="dashboard-card">
+
+                        <div class="dashboard-card-icon">
+                            ✓
+                        </div>
+
+                        <div>
+                            <span>Completed Analyses</span>
+                            <strong id="dashboardAnalysisCount">0</strong>
+                        </div>
+
+                    </div>
+
+
+                    <div class="dashboard-card">
+
+                        <div class="dashboard-card-icon">
+                            ◷
+                        </div>
+
+                        <div>
+                            <span>Latest Dataset</span>
+                            <strong
+                                id="dashboardLatestDataset"
+                                class="small-value"
+                            >
+                                —
+                            </strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- RECENT DATASETS -->
+
+                <div class="content-card">
+
+                    <div class="card-heading">
+
+                        <div>
+                            <span class="section-label">
+                                RECENT ACTIVITY
+                            </span>
+
+                            <h3>Recent Datasets</h3>
+
+                            <p>
+                                Recently uploaded and analyzed datasets.
+                            </p>
+                        </div>
+
+                        <button
+                            class="text-button"
+                            data-section="datasetsSection"
+                        >
+                            View all
+                        </button>
+
+                    </div>
+
+
+                    <div
+                        id="recentDatasetsContainer"
+                        class="dataset-list"
+                    >
+
+                        <div class="empty-message">
+                            No datasets analyzed yet.
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =========================
+                 UPLOAD / ANALYZE
+            ========================== -->
+
+            <section
+                id="uploadSection"
+                class="page-section hidden"
+            >
+
+                <div class="page-heading">
+
+                    <span class="section-label">
+                        DATASET
+                    </span>
+
+                    <h2>Analyze Dataset</h2>
+
+                    <p>
+                        Upload a CSV or Excel dataset to generate
+                        performance analysis and insights.
+                    </p>
+
+                </div>
+
+
+                <div class="content-card upload-card">
+
+                    <div class="upload-box">
+
+                        <div class="upload-icon">
+                            ↑
+                        </div>
+
+                        <h3>Select your dataset</h3>
+
+                        <p>
+                            CSV, XLSX or XLS files
+                        </p>
+
+                        <input
+                            type="file"
+                            id="fileInput"
+                            accept=".csv,.xlsx,.xls"
+                        >
+
+                        <label
+                            for="fileInput"
+                            class="choose-button"
+                        >
+                            Choose File
+                        </label>
+
+                        <div
+                            id="fileName"
+                            class="file-name"
+                        >
+                            No file selected
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        id="analyzeButton"
+                        class="analyze-button"
+                    >
+                        Analyze Dataset
+                    </button>
+
+
+                    <div
+                        id="statusMessage"
+                        class="status-message"
+                    ></div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =========================
+                 ANALYSIS RESULTS
+            ========================== -->
+
+            <section
+                id="resultsSection"
+                class="page-section hidden"
+            >
+
+                <div class="page-heading">
+
+                    <span class="section-label">
+                        ANALYSIS
+                    </span>
+
+                    <h2>Dataset Analysis</h2>
+
+                    <p>
+                        Detailed summary of the uploaded dataset.
+                    </p>
+
+                </div>
+
+
+                <!-- SUMMARY -->
+
+                <div class="summary-grid">
+
+                    <div class="summary-card">
+
+                        <div class="summary-icon">
+                            #
+                        </div>
+
+                        <div>
+                            <span>Total Records</span>
+                            <strong id="rowCount">0</strong>
+                        </div>
+
+                    </div>
+
+
+                    <div class="summary-card">
+
+                        <div class="summary-icon">
+                            ☷
+                        </div>
+
+                        <div>
+                            <span>Total Columns</span>
+                            <strong id="columnCount">0</strong>
+                        </div>
+
+                    </div>
+
+
+                    <div class="summary-card">
+
+                        <div class="summary-icon">
+                            %
+                        </div>
+
+                        <div>
+                            <span>Numeric Fields</span>
+                            <strong id="numericCount">0</strong>
+                        </div>
+
+                    </div>
+
+
+                    <div class="summary-card">
+
+                        <div class="summary-icon">
+                            !
+                        </div>
+
+                        <div>
+                            <span>Missing Values</span>
+                            <strong id="missingCount">0</strong>
+                        </div>
+
+                    </div>
+
+
+                    <div class="summary-card">
+
+                        <div class="summary-icon">
+                            ⧉
+                        </div>
+
+                        <div>
+                            <span>Duplicate Records</span>
+                            <strong id="duplicateCount">0</strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- DATASET FIELDS -->
+
+                <div class="content-card">
+
+                    <div class="card-heading">
+
+                        <div>
+                            <span class="section-label">
+                                DATASET
+                            </span>
+
+                            <h3>Dataset Fields</h3>
+
+                            <p>
+                                Columns detected in the uploaded dataset.
+                            </p>
+                        </div>
+
+                    </div>
+
+                    <div
+                        id="columnList"
+                        class="column-list"
+                    ></div>
+
+                </div>
+
+
+                <!-- PERFORMANCE STATISTICS -->
+
+                <div class="content-card">
+
+                    <div class="card-heading">
+
+                        <div>
+                            <span class="section-label">
+                                PERFORMANCE
+                            </span>
+
+                            <h3>Performance Statistics</h3>
+
+                            <p>
+                                Statistical summary of numeric fields.
+                            </p>
+                        </div>
+
+                    </div>
+
+                    <div
+                        id="statisticsContainer"
+                        class="statistics-container"
+                    ></div>
+
+                </div>
+
+
+                <!-- INSIGHTS -->
+
+                <div
+                    id="insightsCard"
+                    class="content-card"
+                >
+
+                    <div class="card-heading">
+
+                        <div>
+                            <span class="section-label">
+                                INSIGHTS
+                            </span>
+
+                            <h3>Key Insights</h3>
+
+                            <p>
+                                Automatically generated observations
+                                from the dataset.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <div
+                        id="insightsContainer"
+                        class="insights-container"
+                    ></div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =========================
+                 DATASETS
+            ========================== -->
+
+            <section
+                id="datasetsSection"
+                class="page-section hidden"
+            >
+
+                <div class="page-heading">
+
+                    <span class="section-label">
+                        DATASETS
+                    </span>
+
+                    <h2>Dataset History</h2>
+
+                    <p>
+                        View datasets that have been processed by the system.
+                    </p>
+
+                </div>
+
+
+                <div class="content-card">
+
+                    <div class="card-heading">
+
+                        <div>
+                            <h3>Processed Datasets</h3>
+
+                            <p>
+                                Uploaded datasets stored in the cloud.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        id="datasetHistoryContainer"
+                        class="dataset-history"
+                    >
+
+                        <div class="empty-message">
+                            No datasets available.
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <footer>
+
+        <span>
+            Student Performance Analytics • Cloud-Based Data Processing
+        </span>
+
+    </footer>
+
+
+    <script src="app.js"></script>
+
+</body>
+
+</html>
