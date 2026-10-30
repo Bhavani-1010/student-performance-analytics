@@ -1,4 +1,6 @@
+
 const API_URL = "https://student-performance-analytics-6593.onrender.com";
+
 /* =========================================
    SUPABASE AUTHENTICATION
 ========================================= */
@@ -11,6 +13,11 @@ const supabaseClient = window.supabase.createClient(
     SUPABASE_KEY
 );
 
+
+/* =========================================
+   AUTHENTICATION ELEMENTS
+========================================= */
+
 const loginScreen = document.getElementById("loginScreen");
 const appLayout = document.getElementById("appLayout");
 
@@ -19,6 +26,23 @@ const loginEmail = document.getElementById("loginEmail");
 const loginPassword = document.getElementById("loginPassword");
 const loginButton = document.getElementById("loginButton");
 const loginMessage = document.getElementById("loginMessage");
+
+const forgotPasswordButton =
+    document.getElementById("forgotPasswordButton");
+
+const passwordResetScreen =
+    document.getElementById("passwordResetScreen");
+
+const passwordResetForm =
+    document.getElementById("passwordResetForm");
+
+const newPassword =
+    document.getElementById("newPassword");
+
+const passwordResetMessage =
+    document.getElementById("passwordResetMessage");
+
+
 /* =========================================
    ELEMENTS
 ========================================= */
@@ -251,10 +275,6 @@ if (analyzeButton) {
             }
 
 
-            /* =========================
-               DISPLAY ANALYSIS
-            ========================= */
-
             displayAnalysis(result);
 
 
@@ -265,16 +285,7 @@ if (analyzeButton) {
                 "#16a34a";
 
 
-            /* =========================
-               OPEN RESULTS
-            ========================= */
-
             showSection("resultsSection");
-
-
-            /* =========================
-               REFRESH DASHBOARD DATA
-            ========================= */
 
             loadDashboard();
 
@@ -309,10 +320,6 @@ if (analyzeButton) {
 ========================================= */
 
 function displayAnalysis(result) {
-
-    /* -----------------------------
-       Summary
-    ----------------------------- */
 
     const rowCount =
         document.getElementById("rowCount");
@@ -351,9 +358,7 @@ function displayAnalysis(result) {
             result.duplicate_records ?? 0;
 
 
-    /* -----------------------------
-       Column list
-    ----------------------------- */
+    /* COLUMN LIST */
 
     const columnList =
         document.getElementById("columnList");
@@ -368,11 +373,8 @@ function displayAnalysis(result) {
                 const tag =
                     document.createElement("div");
 
-                tag.className =
-                    "column-tag";
-
-                tag.textContent =
-                    column;
+                tag.className = "column-tag";
+                tag.textContent = column;
 
                 columnList.appendChild(tag);
 
@@ -381,14 +383,10 @@ function displayAnalysis(result) {
     }
 
 
-    /* -----------------------------
-       Statistics
-    ----------------------------- */
+    /* STATISTICS */
 
     const statisticsContainer =
-        document.getElementById(
-            "statisticsContainer"
-        );
+        document.getElementById("statisticsContainer");
 
     if (statisticsContainer) {
 
@@ -432,24 +430,15 @@ function displayAnalysis(result) {
                 const stats =
                     statistics[column];
 
-
                 table += `
                     <tr>
-
                         <td>${escapeHTML(column)}</td>
-
                         <td>${stats.count}</td>
-
                         <td>${stats.mean}</td>
-
                         <td>${stats.median}</td>
-
                         <td>${stats.std}</td>
-
                         <td>${stats.minimum}</td>
-
                         <td>${stats.maximum}</td>
-
                     </tr>
                 `;
 
@@ -461,29 +450,21 @@ function displayAnalysis(result) {
                 </table>
             `;
 
-
-            statisticsContainer.innerHTML =
-                table;
+            statisticsContainer.innerHTML = table;
 
         }
 
     }
 
 
-    /* -----------------------------
-       Insights
-    ----------------------------- */
+    /* INSIGHTS */
 
     const insightsContainer =
-        document.getElementById(
-            "insightsContainer"
-        );
-
+        document.getElementById("insightsContainer");
 
     if (insightsContainer) {
 
         insightsContainer.innerHTML = "";
-
 
         const insights =
             result.insights || [];
@@ -503,20 +484,12 @@ function displayAnalysis(result) {
                 const item =
                     document.createElement("div");
 
-                item.className =
-                    "insight-item";
-
+                item.className = "insight-item";
 
                 item.innerHTML = `
-                    <div class="insight-icon">
-                        ✓
-                    </div>
-
-                    <div>
-                        ${escapeHTML(insight)}
-                    </div>
+                    <div class="insight-icon">✓</div>
+                    <div>${escapeHTML(insight)}</div>
                 `;
-
 
                 insightsContainer.appendChild(item);
 
@@ -540,17 +513,13 @@ async function loadDatasets() {
         const response =
             await fetch(`${API_URL}/datasets`);
 
-
         const result =
             await response.json();
 
 
         if (!result.success) {
 
-            console.error(
-                result.error
-            );
-
+            console.error(result.error);
             return;
 
         }
@@ -559,10 +528,7 @@ async function loadDatasets() {
         const datasets =
             result.datasets || [];
 
-
-        displayDatasetHistory(
-            datasets
-        );
+        displayDatasetHistory(datasets);
 
 
     } catch (error) {
@@ -584,10 +550,7 @@ async function loadDatasets() {
 function displayDatasetHistory(datasets) {
 
     const container =
-        document.getElementById(
-            "datasetHistoryContainer"
-        );
-
+        document.getElementById("datasetHistoryContainer");
 
     if (!container) return;
 
@@ -612,17 +575,13 @@ function displayDatasetHistory(datasets) {
         const row =
             document.createElement("div");
 
-        row.className =
-            "dataset-row";
-
+        row.className = "dataset-row";
 
         row.innerHTML = `
 
             <div>
                 <div class="dataset-name">
-                    ${escapeHTML(
-                        dataset.file_name || "Dataset"
-                    )}
+                    ${escapeHTML(dataset.file_name || "Dataset")}
                 </div>
 
                 <div class="dataset-meta">
@@ -633,32 +592,21 @@ function displayDatasetHistory(datasets) {
                 </div>
             </div>
 
-
             <div class="dataset-meta">
-                ${escapeHTML(
-                    dataset.file_type || "—"
-                )}
+                ${escapeHTML(dataset.file_type || "—")}
             </div>
-
 
             <div>
                 <span class="dataset-status">
-                    ${escapeHTML(
-                        dataset.processing_status ||
-                        "Completed"
-                    )}
+                    ${escapeHTML(dataset.processing_status || "Completed")}
                 </span>
             </div>
 
-
             <div class="dataset-meta">
-                ${formatDate(
-                    dataset.created_at
-                )}
+                ${formatDate(dataset.created_at)}
             </div>
 
         `;
-
 
         container.appendChild(row);
 
@@ -678,10 +626,8 @@ async function loadDashboard() {
         const response =
             await fetch(`${API_URL}/datasets`);
 
-
         const result =
             await response.json();
-
 
         if (!result.success) return;
 
@@ -690,88 +636,66 @@ async function loadDashboard() {
             result.datasets || [];
 
 
-        /* Total datasets */
+        /* TOTAL DATASETS */
 
         const datasetCount =
-            document.getElementById(
-                "dashboardDatasetCount"
-            );
+            document.getElementById("dashboardDatasetCount");
 
         if (datasetCount) {
-
-            datasetCount.textContent =
-                datasets.length;
-
+            datasetCount.textContent = datasets.length;
         }
 
 
-        /* Total records */
+        /* TOTAL RECORDS */
 
         const totalRecords =
             datasets.reduce(
                 (total, dataset) =>
-                    total +
-                    Number(dataset.row_count || 0),
+                    total + Number(dataset.row_count || 0),
                 0
             );
 
-
         const recordCount =
-            document.getElementById(
-                "dashboardRecordCount"
-            );
+            document.getElementById("dashboardRecordCount");
 
         if (recordCount) {
-
-            recordCount.textContent =
-                totalRecords;
-
+            recordCount.textContent = totalRecords;
         }
 
 
-        /* Completed analyses */
+        /* COMPLETED ANALYSES */
 
         const analysisCount =
-            document.getElementById(
-                "dashboardAnalysisCount"
-            );
+            document.getElementById("dashboardAnalysisCount");
 
         if (analysisCount) {
 
             analysisCount.textContent =
                 datasets.filter(
                     dataset =>
-                        dataset.processing_status ===
-                        "completed"
+                        dataset.processing_status === "completed"
                 ).length;
 
         }
 
 
-        /* Latest dataset */
+        /* LATEST DATASET */
 
         const latestDataset =
-            document.getElementById(
-                "dashboardLatestDataset"
-            );
-
+            document.getElementById("dashboardLatestDataset");
 
         if (latestDataset && datasets.length) {
 
             latestDataset.textContent =
-                datasets[datasets.length - 1]
-                    .file_name || "—";
+                datasets[datasets.length - 1].file_name || "—";
 
         }
 
 
-        /* Recent datasets */
+        /* RECENT DATASETS */
 
         const recentContainer =
-            document.getElementById(
-                "recentDatasetsContainer"
-            );
-
+            document.getElementById("recentDatasetsContainer");
 
         if (recentContainer) {
 
@@ -787,7 +711,6 @@ async function loadDashboard() {
                 const recent =
                     datasets.slice(-5).reverse();
 
-
                 recentContainer.innerHTML = "";
 
 
@@ -796,18 +719,13 @@ async function loadDashboard() {
                     const row =
                         document.createElement("div");
 
-                    row.className =
-                        "dataset-row";
-
+                    row.className = "dataset-row";
 
                     row.innerHTML = `
 
                         <div>
                             <div class="dataset-name">
-                                ${escapeHTML(
-                                    dataset.file_name ||
-                                    "Dataset"
-                                )}
+                                ${escapeHTML(dataset.file_name || "Dataset")}
                             </div>
 
                             <div class="dataset-meta">
@@ -819,28 +737,20 @@ async function loadDashboard() {
                         </div>
 
                         <div class="dataset-meta">
-                            ${escapeHTML(
-                                dataset.file_type || "—"
-                            )}
+                            ${escapeHTML(dataset.file_type || "—")}
                         </div>
 
                         <div>
                             <span class="dataset-status">
-                                ${escapeHTML(
-                                    dataset.processing_status ||
-                                    "Completed"
-                                )}
+                                ${escapeHTML(dataset.processing_status || "Completed")}
                             </span>
                         </div>
 
                         <div class="dataset-meta">
-                            ${formatDate(
-                                dataset.created_at
-                            )}
+                            ${formatDate(dataset.created_at)}
                         </div>
 
                     `;
-
 
                     recentContainer.appendChild(row);
 
@@ -872,8 +782,7 @@ function escapeHTML(value) {
     const div =
         document.createElement("div");
 
-    div.textContent =
-        value ?? "";
+    div.textContent = value ?? "";
 
     return div.innerHTML;
 
@@ -886,15 +795,12 @@ function formatDate(dateValue) {
         return "—";
     }
 
-
     const date =
         new Date(dateValue);
-
 
     if (isNaN(date.getTime())) {
         return "—";
     }
-
 
     return date.toLocaleDateString(
         "en-IN",
@@ -914,16 +820,24 @@ function formatDate(dateValue) {
 
 async function checkAuthentication() {
 
-    const {
-        data: { session }
-    } = await supabaseClient.auth.getSession();
+    try {
 
-    if (session) {
+        const {
+            data: { session },
+            error
+        } = await supabaseClient.auth.getSession();
 
-        showApplication(session);
+        if (error) throw error;
 
-    } else {
+        if (session) {
+            showApplication(session);
+        } else {
+            showLogin();
+        }
 
+    } catch (error) {
+
+        console.error("Session check error:", error);
         showLogin();
 
     }
@@ -945,6 +859,14 @@ function showLogin() {
         appLayout.classList.add("hidden");
     }
 
+    if (loginForm) {
+        loginForm.classList.remove("hidden");
+    }
+
+    if (passwordResetScreen) {
+        passwordResetScreen.classList.add("hidden");
+    }
+
 }
 
 
@@ -963,18 +885,12 @@ function showApplication(session) {
     }
 
 
-    /* Display logged-in user's email */
-
     const userEmail =
         document.getElementById("userEmail");
 
     if (userEmail && session?.user?.email) {
-
-        userEmail.textContent =
-            session.user.email;
-
+        userEmail.textContent = session.user.email;
     }
-
 
     loadDashboard();
 
@@ -987,96 +903,227 @@ function showApplication(session) {
 
 if (loginForm) {
 
-    loginForm.addEventListener(
-        "submit",
-        async (event) => {
+    loginForm.addEventListener("submit", async (event) => {
 
-            event.preventDefault();
+        event.preventDefault();
 
+        const email =
+            loginEmail.value.trim();
 
-            const email =
-                loginEmail.value.trim();
-
-            const password =
-                loginPassword.value;
+        const password =
+            loginPassword.value;
 
 
-            if (!email || !password) {
-
-                loginMessage.textContent =
-                    "Please enter your email and password.";
-
-                loginMessage.style.color =
-                    "#dc2626";
-
-                return;
-
-            }
-
-
-            loginButton.disabled = true;
-
-            loginButton.textContent =
-                "Signing in...";
+        if (!email || !password) {
 
             loginMessage.textContent =
-                "";
+                "Please enter your email and password.";
 
+            loginMessage.style.color = "#dc2626";
 
-            try {
-
-                const {
-                    data,
-                    error
-                } =
-                    await supabaseClient.auth
-                        .signInWithPassword({
-                            email: email,
-                            password: password
-                        });
-
-
-                if (error) {
-                    throw error;
-                }
-
-
-                loginMessage.textContent =
-                    "Login successful.";
-
-                loginMessage.style.color =
-                    "#16a34a";
-
-
-                showApplication(data.session);
-
-
-            } catch (error) {
-
-                console.error(
-                    "Login error:",
-                    error
-                );
-
-                loginMessage.textContent =
-                    error.message ||
-                    "Unable to sign in.";
-
-                loginMessage.style.color =
-                    "#dc2626";
-
-
-            } finally {
-
-                loginButton.disabled = false;
-
-                loginButton.textContent =
-                    "Sign In";
-
-            }
+            return;
 
         }
-    );
+
+
+        loginButton.disabled = true;
+        loginButton.textContent = "Signing in...";
+
+        loginMessage.textContent = "";
+
+
+        try {
+
+            const {
+                data,
+                error
+            } = await supabaseClient.auth.signInWithPassword({
+                email: email,
+                password: password
+            });
+
+
+            if (error) throw error;
+
+
+            loginMessage.textContent =
+                "Login successful.";
+
+            loginMessage.style.color = "#16a34a";
+
+            showApplication(data.session);
+
+
+        } catch (error) {
+
+            console.error("Login error:", error);
+
+            loginMessage.textContent =
+                error.message || "Unable to sign in.";
+
+            loginMessage.style.color = "#dc2626";
+
+
+        } finally {
+
+            loginButton.disabled = false;
+            loginButton.textContent = "Sign In";
+
+        }
+
+    });
+
+}
+
+
+/* =========================================
+   FORGOT PASSWORD
+========================================= */
+
+if (forgotPasswordButton) {
+
+    forgotPasswordButton.addEventListener("click", async () => {
+
+        const email =
+            loginEmail.value.trim();
+
+
+        if (!email || !loginEmail.checkValidity()) {
+
+            loginMessage.textContent =
+                "Please enter your registered email address.";
+
+            loginMessage.style.color = "#dc2626";
+
+            return;
+
+        }
+
+
+        forgotPasswordButton.disabled = true;
+
+        loginMessage.textContent =
+            "Sending password reset email...";
+
+        loginMessage.style.color = "#2563eb";
+
+
+        try {
+
+            const { error } =
+                await supabaseClient.auth.resetPasswordForEmail(
+                    email,
+                    {
+                        redirectTo: window.location.origin
+                    }
+                );
+
+
+            if (error) throw error;
+
+
+            loginMessage.textContent =
+                "Password reset email sent. Check your Gmail inbox.";
+
+            loginMessage.style.color = "#16a34a";
+
+
+        } catch (error) {
+
+            console.error("Password reset error:", error);
+
+            loginMessage.textContent =
+                error.message || "Unable to send reset email.";
+
+            loginMessage.style.color = "#dc2626";
+
+
+        } finally {
+
+            forgotPasswordButton.disabled = false;
+
+        }
+
+    });
+
+}
+
+
+/* =========================================
+   UPDATE PASSWORD
+========================================= */
+
+if (passwordResetForm) {
+
+    passwordResetForm.addEventListener("submit", async (event) => {
+
+        event.preventDefault();
+
+        const password =
+            newPassword.value;
+
+
+        if (password.length < 6) {
+
+            passwordResetMessage.textContent =
+                "Password must contain at least 6 characters.";
+
+            passwordResetMessage.style.color = "#dc2626";
+
+            return;
+
+        }
+
+
+        const updateButton =
+            passwordResetForm.querySelector("button[type='submit']");
+
+        updateButton.disabled = true;
+        updateButton.textContent = "Updating Password...";
+
+
+        try {
+
+            const { error } =
+                await supabaseClient.auth.updateUser({
+                    password: password
+                });
+
+
+            if (error) throw error;
+
+
+            await supabaseClient.auth.signOut();
+
+
+            passwordResetForm.reset();
+
+            showLogin();
+
+            loginMessage.textContent =
+                "Password updated successfully. Please sign in.";
+
+            loginMessage.style.color = "#16a34a";
+
+
+        } catch (error) {
+
+            console.error("Password update error:", error);
+
+            passwordResetMessage.textContent =
+                error.message || "Unable to update password.";
+
+            passwordResetMessage.style.color = "#dc2626";
+
+
+        } finally {
+
+            updateButton.disabled = false;
+            updateButton.textContent = "Update Password";
+
+        }
+
+    });
 
 }
 
@@ -1087,40 +1134,31 @@ if (loginForm) {
 
 if (logoutButton) {
 
-    logoutButton.addEventListener(
-        "click",
-        async () => {
+    logoutButton.addEventListener("click", async () => {
 
-            const {
-                error
-            } =
-                await supabaseClient.auth.signOut();
+        const { error } =
+            await supabaseClient.auth.signOut();
 
 
-            if (error) {
+        if (error) {
 
-                console.error(
-                    "Logout error:",
-                    error
-                );
-
-                return;
-
-            }
-
-
-            showLogin();
-
-            if (loginForm) {
-                loginForm.reset();
-            }
-
-            if (loginMessage) {
-                loginMessage.textContent = "";
-            }
+            console.error("Logout error:", error);
+            return;
 
         }
-    );
+
+
+        showLogin();
+
+        if (loginForm) {
+            loginForm.reset();
+        }
+
+        if (loginMessage) {
+            loginMessage.textContent = "";
+        }
+
+    });
 
 }
 
@@ -1131,6 +1169,23 @@ if (logoutButton) {
 
 supabaseClient.auth.onAuthStateChange(
     (event, session) => {
+
+        if (event === "PASSWORD_RECOVERY") {
+
+            showLogin();
+
+            if (loginForm) {
+                loginForm.classList.add("hidden");
+            }
+
+            if (passwordResetScreen) {
+                passwordResetScreen.classList.remove("hidden");
+            }
+
+            return;
+
+        }
+
 
         if (session) {
 
@@ -1150,11 +1205,8 @@ supabaseClient.auth.onAuthStateChange(
    INITIAL LOAD
 ========================================= */
 
-document.addEventListener(
-    "DOMContentLoaded",
-    () => {
+document.addEventListener("DOMContentLoaded", () => {
 
-        checkAuthentication();
+    checkAuthentication();
 
-    }
-);
+});

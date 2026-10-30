@@ -47,6 +47,14 @@
 
             </div>
 
+            <button
+    type="button"
+    id="forgotPasswordButton"
+    class="text-button"
+>
+    Forgot Password?
+</button>
+
 
             <div class="form-group">
 
@@ -78,6 +86,48 @@
             ></div>
 
         </form>
+
+        <!-- PASSWORD RESET SCREEN -->
+
+<div id="passwordResetScreen" class="hidden">
+
+    <h2>Reset Password</h2>
+
+    <p>Enter your new password below.</p>
+
+    <form id="passwordResetForm">
+
+        <div class="form-group">
+
+            <label for="newPassword">
+                New Password
+            </label>
+
+            <input
+                type="password"
+                id="newPassword"
+                placeholder="Enter new password"
+                required
+                minlength="6"
+            >
+
+        </div>
+
+        <button
+            type="submit"
+            class="login-button"
+        >
+            Update Password
+        </button>
+
+        <div
+            id="passwordResetMessage"
+            class="login-message"
+        ></div>
+
+    </form>
+
+</div>
 
     </div>
 
